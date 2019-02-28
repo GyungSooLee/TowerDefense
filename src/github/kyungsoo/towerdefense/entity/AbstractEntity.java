@@ -38,6 +38,10 @@ public abstract class AbstractEntity implements IEntity
 	{
 		return this.hp;
 	}
+	public void setHP(double hp)
+	{
+		this.hp = hp;
+	}
 
 	@Override
 	public double getPower()
@@ -68,6 +72,32 @@ public abstract class AbstractEntity implements IEntity
 	{
 		return this.radius;
 	}
+	
+	@Override
+	public double[] getCenter()
+	{
+		return loc;
+	}
+
+	@Override
+	public double[] getDelta()
+	{
+		throw new RuntimeException("각자 구현해야함");
+	}
+
+	/**
+	 * 주어진 증분만큼 이동시킴
+	 * 
+	 * @param dx
+	 * @param dy
+	 */
+	public void shiftLoc(double dx, double dy)
+	{
+		loc[0] += dx;
+		loc[1] += dy;
+	}
+	
+	
 
 
 }

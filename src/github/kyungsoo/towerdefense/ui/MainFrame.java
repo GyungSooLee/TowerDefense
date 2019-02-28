@@ -13,9 +13,12 @@ import java.awt.geom.Rectangle2D;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
 import github.kyungsoo.towerdefense.entity.Circle;
+import github.kyungsoo.towerdefense.entity.Enemy;
+import github.kyungsoo.towerdefense.entity.Router;
 import github.kyungsoo.towerdefense.entity.TowerModel;
 
 /**
@@ -45,23 +48,28 @@ public class MainFrame extends  JFrame
 	
 	ShapePanel shapePanel = new ShapePanel(model);
 	
-	Timer timer = new Timer(500, new ActionListener()
+	Timer timer = new Timer(100, new ActionListener()
 	{
-		
+		// long prevTime = System.currentTimeMillis();
+		// 56, 60...., 
 		@Override
 		public void actionPerformed(ActionEvent e)
 		{
+			long curTime = System.currentTimeMillis(); // 1/1000초
+			System.out.println("T: " + curTime);
 			// System.out.println(System.currentTimeMillis());
 			// 1. 총알 등록
+			
 			
 			// 2. 적 사망 처리
 			//  2.1. HP 감소 - 
 			//  2.2. 총알 없애야 함(적중, 범위 벗어났을때
 			// 3. 적 이동 시킴
-			model.updateGame();
+			model.updateGame(curTime);
 			
 			// 3. 화면 업데이트
-			shapePanel.update(model);
+			SwingUtilities.invokeLater(() -> shapePanel.update(model));
+//			shapePanel.update(model);
 			System.out.println("OK");
 		}
 	});
@@ -92,9 +100,9 @@ public class MainFrame extends  JFrame
 				@Override
 				public void actionPerformed(ActionEvent e)
 				{
-//				Circle enemy = new Circle(10, 10, 20);
-//				CircleUI circleUI = new CircleUI(enemy, Color.RED, Color.BLACK);
-//				shapePanel.addShape(circleUI);
+					int delta = 4;
+					Enemy enemy = new Enemy(new double[] {10,  10}, 15, 100,  delta, delta);
+					model.addEnemy(enemy);
 					
 				}
 			});
@@ -138,7 +146,7 @@ public class MainFrame extends  JFrame
 	{
 		// JFrame f1 = new JFrame("Power Point");
 		MainFrame frame = new MainFrame("Power Point");
-		frame.model.addEnemy(new double[] {300, 300});
+//		 frame.model.addEnemy(new double[] {300, 300});
 		/*
 		 * 창에 있는 X 누를때 어떻게 할건지?
 		 * 

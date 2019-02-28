@@ -12,7 +12,7 @@ public class CircleUI extends ShapeUI
 	private IEntity target;
 	private Color bgColor;
 	private Color lineColor;
-	private double radius = 20; 
+//	private double radius = 20; 
 	
 	public CircleUI(IEntity target, Color bgColor, Color lineColor)
 	{
@@ -28,11 +28,12 @@ public class CircleUI extends ShapeUI
 	
 	public void draw(Graphics g) {
 		// 배경색 칠하기
+		double radius = target.getRadius();
 		g.setColor(bgColor);
-		g.fillOval((int)(target.getX() - radius), (int)(target.getY() - radius), (int)(this.radius * 2), (int)(this.radius * 2));
+		g.fillOval((int)(target.getX() - radius), (int)(target.getY() - radius), (int)(radius * 2), (int)(radius * 2));
 		// 라인 색 칠하기
 		g.setColor(lineColor);
-		g.drawOval((int)(target.getX() - radius), (int)(target.getY() - radius), (int)(this.radius * 2), (int)(this.radius * 2));
+		g.drawOval((int)(target.getX() - radius), (int)(target.getY() - radius), (int)(radius * 2), (int)(radius * 2));
 	}
 
 	@Override

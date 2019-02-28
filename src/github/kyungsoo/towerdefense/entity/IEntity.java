@@ -30,4 +30,13 @@ public interface IEntity
 	double getRange();
 	
 	double getRadius();
+	
+	double[] getCenter();
+	/**
+	 * 단위 시간당 이동할 dx, dy의 배열
+	 * @return
+	 */
+	double[] getDelta();
+	
+	void shiftLoc(double dx, double dy);
 }

@@ -11,6 +11,7 @@ import java.util.List;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 
+import github.kyungsoo.towerdefense.entity.Bullet;
 import github.kyungsoo.towerdefense.entity.Enemy;
 import github.kyungsoo.towerdefense.entity.Gun;
 import github.kyungsoo.towerdefense.entity.TowerModel;
@@ -28,7 +29,7 @@ public class ShapePanel extends JComponent implements MouseListener
 	
 	ShapeUI activeShape = null;
 
-	TowerModel model;
+	volatile TowerModel model;
 	
 	
 	public ShapePanel(TowerModel model)
@@ -43,12 +44,17 @@ public class ShapePanel extends JComponent implements MouseListener
 	protected void paintComponent(Graphics g)
 	{
 		// Graphics g - 붓이라고 생각하면 됩니다.
-		super.paintComponents(g);
+		// super.paintComponents(g);
 		int W = this.getWidth();
 		int H = this.getHeight();
 		// 배경색
 		g.setColor(Color.GREEN);
 		g.fillRect(margin, margin, W - margin * 2, H - margin * 2);
+		
+		int gameW = model.getWidth();
+		int gameH = model.getHeight();
+		g.setColor(Color.BLACK);
+		g.drawRect(0, 0, gameW, gameH);
 		
 		if ( this.model != null ) {
 			// gun 칠하기
@@ -57,6 +63,10 @@ public class ShapePanel extends JComponent implements MouseListener
 			
 			List<Enemy> enemies = model.getEnemys();
 			renderEnemies(g, enemies);
+			
+			List<Bullet> bullets = model.getBullets();
+			renderBullets(g, bullets);
+			System.out.printf("G:%d, E:%d, B:%d", guns.size(), enemies.size(), bullets.size() );
 			
 			
 		}
@@ -70,6 +80,17 @@ public class ShapePanel extends JComponent implements MouseListener
 		
 	}
 
+	private void renderBullets(Graphics g, List<Bullet> bullets)
+	{
+		CircleUI ui = new CircleUI(null, Color.BLACK, Color.BLACK);
+		for(int i = 0; i < bullets.size(); i++)
+		{
+			ui.setTarget(bullets.get(i));
+			ui.draw(g);
+		}	
+	}
+	
+
 	void renderEnemies(Graphics g, List<Enemy> enemies)
 	{
 		CircleUI ui = new CircleUI(null, Color.RED, Color.BLACK);
@@ -82,7 +103,7 @@ public class ShapePanel extends JComponent implements MouseListener
 
 	void renderGuns(Graphics g, List<Gun> guns)
 	{
-	
+//		CircleUI ui = new CircleUI(null, Color.RED, Color.BLACK);
 		GunUI ui = new GunUI(null, Color.YELLOW, Color.BLACK);
 		for(int i = 0; i < guns.size(); i++)
 		{
@@ -131,7 +152,7 @@ public class ShapePanel extends JComponent implements MouseListener
 		double loc[] = {xPoint, yPoint};
 		
 		model.addGun(loc);
-		repaint();
+		// repaint();
 	}
 
 	@Override

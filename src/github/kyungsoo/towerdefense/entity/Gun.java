@@ -8,6 +8,7 @@ public class Gun extends AbstractEntity
 	public Gun(double [] loc, double radius, double range)
 	{
 		super(loc, radius, range, DEFAULT_HP, DEFAULT_POWER);
-	}	
+	}
+
 	
 }
