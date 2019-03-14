@@ -19,14 +19,38 @@ import java.util.Arrays;
 import java.util.List;
 
 import github.kyungsoo.towerdefense.geom.Geom;
+import github.kyungsoo.towerdefense.ui.User;
 
 
 
 public class TowerModel
 {
 	
-	Router router = new Router(new double[] {10, 10} , new double[] {500, 500});
+	// Router router = new Router(new double[] {100, 100} , new double[] {500, 500});
+	User user = new User();
+	Router[] routers;
 
+	public Router[] assembleRouters(double[][] points)	//router 정보 생성, next값 넘겨주기.
+	{
+		routers = new Router[points.length - 1]; // [ r1, r2, r3 ]
+		for (int i = 0; i < points.length - 1; i++)
+		{
+			Router r = new Router(this, points[i], points[i + 1]);
+			routers[i] = r;
+			if (i > 0)
+			{
+				routers[i - 1].setNext(r);
+			}
+
+		}
+		return routers;
+	}
+	
+	public Router[] getRouters()
+	{
+		return routers;
+	}
+	
 	/**
 	 * 게임판 크기
 	 */
@@ -70,17 +94,20 @@ public class TowerModel
 	
 	
 	
-	public void addEnemy(double[] loc)
-	{
-		Enemy e = new Enemy(loc, 50, 100, 10, 10);
-		this.addEnemy(e);
-	}
+//	public void addEnemy(double[] loc)
+//	{
+//		Enemy e = new Enemy(loc, 50, 100, 10, 10);
+//		this.addEnemy(e);
+//	}
 	public List<Enemy> getEnemys()
 	{
 		return enemies;
 	}
 
 	long prevTime = 0;
+	
+	int score = 0;
+	
 	public void updateGame(long curTime) // 212918292872
 	{
 		if ( prevTime == 0 ) {
@@ -88,7 +115,7 @@ public class TowerModel
 			return;
 		}
 		long dT = curTime - prevTime;
-		System.out.println("DT:" + dT);
+	//	System.out.println("DT:" + dT);
 		//  212918292872 prevTime;
 		//  212918292922 curTime;  dT = curTime - prevTime
 		// 1. 총알 등록
@@ -100,24 +127,46 @@ public class TowerModel
 		flushEntities(bullets);
 		flushEntities(enemies);
 		
+		// score 처리
+	//	System.out.println("Score : " + score);
+		
 		
 		
 		//  2.2. 총알 없애야 함(적중, 범위 벗어났을때)
 		// 3. 이동 처리
 		moveBullet(dT);
-		moveEnemies(router);
+		moveEnemies(routers, curTime); 
 //		System.out.println("bullet size: " + bullets.size());
 //		System.out.println("gun    size: " + guns.size());
 		prevTime = curTime;
+
 	}
-	void moveEnemies(Router router)
+	
+
+
+	void moveEnemies(Router [] routers, long curTime)
 	{
-		for(Enemy enemy : enemies)
+		for(Router router : routers)
 		{
-			router.moveEntity(enemy);
+			router.moveEntity(curTime);
 		}
+//		for(Enemy enemy : enemies)
+//		{
+//			router.moveEntity(enemy);
+//		}
 		
 	}
+	
+
+	void updateScore()
+	{
+		/*
+		 * 좀 더 구현해야하지만 일단 여기까지만.
+		 * 나중에 OBSERVER PATTERN 적용해서 결합도를 낮추면 좋음!
+		 */
+		score++;
+	}
+	
 	/*
 	 * 제네릭 고급 기법! 
 	 */
@@ -130,6 +179,13 @@ public class TowerModel
 			{
 				// entities.remove(entity); // 오류가 생깁니다.
 				deleted.add(entity);
+				if(entity.getClass() == Enemy.class)
+				{
+					// score 처리
+					updateScore();
+					// updateStatusBar();
+				}
+
 			}
 			double[] newCenter = entity.getCenter();
 			if(newCenter[0] < 0 || newCenter[0] > this.width || newCenter[1] < 0 || newCenter[1] > this.height)
@@ -198,7 +254,7 @@ public class TowerModel
 				double speed = 200;
 				Bullet bullet = new Bullet(Arrays.copyOf(gun.loc, 2), range, hp, power, deg, speed);
 				bullets.add(bullet);
-				System.out.println("new bullet : " + bullet);
+			//	System.out.println("new bullet : " + bullet);
 			}
 		}
 	}
@@ -221,11 +277,28 @@ public class TowerModel
 		
 		return this.bullets;
 	}
-	public void addEnemy(Enemy enemy)
+	public void addEnemy(Enemy enemy, long initTime)
 	{
 		this.enemies.add(enemy);
-		
+		this.routers[0].addEnemy(enemy, initTime);
 	}
+
+	public User getUser()
+	{
+		return this.user;
+	}
+
+	public boolean isGameOver()
+	{
+		return user.getLife() <= 0;
+//		if(user.getLife() <= 0)
+//		{
+//			return true;
+//		}
+//		return false;
+	}
+	
+	
 	
 	
 	

@@ -1,5 +1,7 @@
 package github.kyungsoo.towerdefense.entity;
 
+import java.util.Arrays;
+
 public class Enemy extends AbstractEntity
 {
 
@@ -19,6 +21,11 @@ public class Enemy extends AbstractEntity
 	public double[] getDelta()
 	{
 		return new double [] {dx, dy};
+	}
+
+	public void setLocation(double[] loc)
+	{
+		this.loc = Arrays.copyOf(loc, loc.length);
 	}
 
 

@@ -70,7 +70,10 @@ public class MainFrame extends  JFrame
 			// 3. 화면 업데이트
 			SwingUtilities.invokeLater(() -> shapePanel.update(model));
 //			shapePanel.update(model);
-			System.out.println("OK");
+			//System.out.println("OK");
+			if( model.isGameOver() ) {
+				timer.stop();
+			}
 		}
 	});
 	
@@ -101,8 +104,8 @@ public class MainFrame extends  JFrame
 				public void actionPerformed(ActionEvent e)
 				{
 					int delta = 4;
-					Enemy enemy = new Enemy(new double[] {10,  10}, 15, 100,  delta, delta);
-					model.addEnemy(enemy);
+					Enemy enemy = new Enemy(null, 15, 100,  delta, delta);
+					model.addEnemy(enemy, System.currentTimeMillis());
 					
 				}
 			});
@@ -128,7 +131,14 @@ public class MainFrame extends  JFrame
 //		router.setShapePanel(shapePanel);
 //		
 //		router.start();
-		
+		model.assembleRouters(new double[][] {
+			{100, 100},
+			{300, 100},
+			{300, 400}, 
+			{500, 400},
+			{550, 600}
+		});
+
 	}
 	
 	void moveShapes(int dx, int dy ) {

@@ -1,5 +1,6 @@
 package github.kyungsoo.towerdefense.ui;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Panel;
 import java.awt.event.MouseEvent;
@@ -14,6 +15,7 @@ import javax.swing.JPanel;
 import github.kyungsoo.towerdefense.entity.Bullet;
 import github.kyungsoo.towerdefense.entity.Enemy;
 import github.kyungsoo.towerdefense.entity.Gun;
+import github.kyungsoo.towerdefense.entity.Router;
 import github.kyungsoo.towerdefense.entity.TowerModel;
 
 public class ShapePanel extends JComponent implements MouseListener
@@ -68,6 +70,12 @@ public class ShapePanel extends JComponent implements MouseListener
 			renderBullets(g, bullets);
 			System.out.printf("G:%d, E:%d, B:%d", guns.size(), enemies.size(), bullets.size() );
 			
+			Router[] routers = model.getRouters();
+			renderRouters(g, routers);
+			
+			renderUser(g, model);
+			
+			gameOver(g, model.isGameOver());
 			
 		}
 		
@@ -77,6 +85,36 @@ public class ShapePanel extends JComponent implements MouseListener
 		
 		// °æ·Î Ä¥ÇÏ±â
 		
+		
+	}
+	
+	private void gameOver(Graphics g, boolean gameOver)
+	{
+		if ( gameOver) {
+			g.setColor(Color.BLACK);
+			g.setFont(new Font("courier new", Font.BOLD, 50));
+			g.drawString("GAME OVER!", 300, 400);
+		}
+		
+	}
+
+	private void renderUser(Graphics g, TowerModel model)
+	{
+		int life = model.getUser().getLife();
+		String lifeStr = "LIFE : " + life; //
+		g.setColor(Color.BLACK);
+		g.setFont(new Font("courier new", Font.BOLD, 20));
+		g.drawString(lifeStr, 10, 28);
+	}
+
+	private void renderRouters(Graphics g, Router[] routers)
+	{
+		g.setColor(Color.RED);
+		for(int i = 0; i < routers.length; i++)
+		{
+			g.drawLine(routers[i].getX1(), routers[i].getY1(), routers[i].getX2(), routers[i].getY2());
+		}
+		// TODO Auto-generated method stub
 		
 	}
 
